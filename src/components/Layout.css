@@ -1,0 +1,137 @@
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.app-root {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.layout-header {
+  flex-shrink: 0;
+  padding: 1rem;
+  background: linear-gradient(to right, #0096c7, #8e44ad, #e84393, #b11226);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.layout-main {
+  flex-grow: 1;
+  overflow-y: auto;
+  min-height: 0;
+  background-color: #fefefe;
+  padding: 1rem;
+}
+
+.layout-container button {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid transparent;
+  padding: 0.5rem 0.75rem;
+  margin-left: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s, border 0.2s;
+}
+
+.layout-container .add-step-button {
+  margin-top: 1rem !important;
+  background-color: #0096c7 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.layout-container .add-step-button:hover {
+  background-color: #90e0ef !important;
+}
+
+.layout-container .button-submit {
+  margin-top: 1rem !important;
+  background-color: #0096c7 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.layout-container .button-submit:hover {
+  background-color: #90e0ef !important;
+}
+
+.layout-container .delete-icon-button {
+  color: #000;
+}
+
+.layout-container button:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  border-color: #ffffff;
+}
+
+.layout-container .button-save {
+  background-color: #0096c7;
+  color: #fff;
+}
+
+.layout-container .button-save:hover {
+  background-color: #0077a3;
+}
+
+.layout-container .button-edit {
+  background-color: #8e44ad;
+  color: #fff;
+}
+
+.layout-container .button-edit:hover {
+  background-color: #732d91;
+}
+
+.layout-container .button-view {
+  background-color: #0096c7;
+  color: #fff;
+}
+
+.layout-container .button-view:hover {
+  background-color: #0096c7;
+}
+
+.layout-container .button-delete {
+  background-color: #b11226;
+  color: #fff;
+}
+
+.layout-container .button-delete:hover {
+  background-color: #8e1a1a;
+}
+
+.layout-container .button-execute {
+  background-color: #1e8449;
+  color: #fff;
+}
+
+.layout-container .button-execute:hover {
+  background-color: #1e8449;
+}
+
+.layout-container .compare-button {
+  background-color: #0096c7;
+  color: #fff;
+}
+
+.layout-container .compare-button:hover {
+  background-color: #0096c7;
+}
+
+.layout-container .button-pin {
+  background-color: #0096c7;
+  color: #fff;
+}
+
+.layout-container .button-pin:hover {
+  background-color: #0096c7;
+}
+

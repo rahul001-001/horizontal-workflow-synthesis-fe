@@ -1,0 +1,173 @@
+/* Ensure this applies globally via Layout */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #ffffff;
+}
+
+.dashboard-header {
+  color:#000
+}
+
+.custom-strong {
+  color:#000
+}
+
+.dashboard-container {
+  display: flex;
+  flex-direction: row;
+  height: 100vh; /* critical fix */
+  width: 100%;
+  overflow: hidden;
+}
+
+.dashboard-leftpane {
+  width: 25%;
+  background-color: #fdf0f9;
+  padding: 1.5rem;
+  overflow-y: auto;
+  border-right: 2px solid #eee;
+}
+
+.dashboard-leftpane h2 {
+  margin-top: 0;
+  color: #8e44ad;
+  font-size: 1.25rem;
+}
+
+.dashboard-leftpane input,
+.dashboard-leftpane select {
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  color: #000;
+}
+
+.dashboard-flowarea {
+  flex-grow: 1;
+  background-color: #ffffff;
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  padding: 1rem;
+}
+
+
+  .dashboard-sidebar {
+    width: 30%;
+    padding: 1rem;
+    border-right: 1px solid #e0e0e0;
+    overflow-y: auto;
+    background-color: #dfe1db;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .dashboard-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem; /* vertical space between fields */
+    flex-grow: 1;
+  }
+  
+.submit-button {
+  margin-top: 1rem !important;
+  background-color: #0096c7 !important;
+  color: #004d40 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.submit-button:hover {
+  background-color: #90e0ef !important;
+}
+
+  .MuiFormControl-root {
+    margin-bottom: 0.75rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+  
+  /* Control appearance of the select box */
+  .MuiSelect-outlined {
+    padding: 12px;
+    background-color: #f1f6fb; /* pastel blue */
+    border-radius: 8px;
+  }
+  
+  /* Outline styling when not focused */
+  .MuiOutlinedInput-notchedOutline {
+    border-color: #a8dadc;
+  }
+  
+  /* On focus, change border to a stronger pastel */
+  .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #90e0ef;
+    box-shadow: 0 0 3px #90e0ef;
+  }
+  
+  /* Label color */
+  .MuiInputLabel-root {
+    color: #444;
+  }
+
+.MuiOutlinedInput-input,
+.MuiSelect-outlined,
+.MuiInputBase-input {
+  color: #000000 !important;
+}
+
+/* Set label text to dark gray/black */
+.MuiInputLabel-root {
+  color: #222222 !important;
+}
+
+/* Ensure menu items in the dropdown are black */
+.MuiMenuItem-root {
+  color: #000000 !important;
+}
+
+.MuiOutlinedInput-root {
+  transition: border 0.3s, background 0.3s;
+  background-color: white;
+  border-radius: 8px;
+  color: #000;
+}
+
+.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-image: linear-gradient(to right,#0096c7 0%,#8e44ad 45%,#e84393 70%,#b11226 100%) 1;
+  border-width: 2px;
+  border-style: solid;
+  border-image-slice: 1;
+}
+
+.MuiOutlinedInput-root:hover {
+  box-shadow: 0 0 6px rgba(0, 150, 199, 0.4),
+              0 0 6px rgba(142, 68, 173, 0.4),
+              0 0 6px rgba(232, 67, 147, 0.4);
+}
+
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-image: linear-gradient(to right,#0096c7 0%,#8e44ad 45%,#e84393 70%,#b11226 100%) 1;
+  border-width: 2px;
+  border-style: solid;
+  border-image-slice: 1;
+}
+
+/* .submit-button {
+  margin-top: 1rem !important;
+  background: linear-gradient(to right,#0096c7 0%,#8e44ad 45%,#e84393 70%,#b11226 100%) !important;
+  
+  color: white !important;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+} */
+
+.submit-button:hover {
+  opacity: 0.95;
+}
