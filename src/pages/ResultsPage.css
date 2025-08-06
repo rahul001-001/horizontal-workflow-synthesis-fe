@@ -1,0 +1,82 @@
+.results-page {
+    padding: 1rem;
+    background-color: #fefefe;
+    min-height: 100vh;
+    color: #000;
+  }
+  
+  .results-table-wrapper {
+    overflow-x: auto;
+    border-radius: 8px;
+    background-color: #fff;
+    padding: 1rem;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  .results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    color: #222;
+  }
+  
+  .results-table th,
+  .results-table td {
+    padding: 0.75rem;
+    text-align: center;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .results-table tr:hover {
+    background-color: #fdf6ff;
+  }
+  
+  .status {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+  
+  .status.success {
+    background-color: #d4edda;
+    color: #155724;
+  }
+  
+  .status.error {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+  
+  .view-link {
+    color: #0096c7;
+    text-decoration: none;
+    font-weight: 500;
+    margin-right: 0.5rem;
+  }
+  
+  .view-link:hover {
+    text-decoration: underline;
+  }
+  
+  .delete-button {
+    background-color: #b11226; /* deep red */
+    color: white;
+    padding: 0.5rem 0.9rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-left: 0.5rem;
+  }
+  
+  .delete-button:hover {
+    background-color: #8e1a1a;
+  }
+  
+  .empty-message {
+    font-style: italic;
+    color: #777;
+    margin-top: 2rem;
+  }
+  

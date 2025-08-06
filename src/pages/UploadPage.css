@@ -1,0 +1,109 @@
+.action-button {
+    margin-top: 1rem !important;
+    background-color: #0096c7 !important;
+    color: #004d40 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+.upload-page {
+    background-color: #fefefe;
+    color: #000;
+    min-height: 100vh;
+    padding: 1rem;
+  }
+  
+  /* Tabs + Search */
+  .upload-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  
+  .upload-tabs {
+    background-color: #fdfdfd; /* very light backdrop */
+    padding: 0.5rem;
+    border-radius: 8px;
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .file-uploader {
+    background-color: #ffffff;
+    border: 2px dashed #a8dadc;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #333;
+    transition: border 0.3s ease;
+  }
+  
+  .file-uploader:hover {
+    border-color: #8e44ad;
+    background-color: #f9f9ff;
+  }
+  
+  .tab-button {
+    background-color: #0096c7 !important;
+    color: white !important;
+    border: none !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    font-weight: 500 !important;
+    transition: background-color 0.2s ease;
+  }
+  
+  .tab-button:hover {
+    background-color: #0077aa !important;
+  }
+  
+  .tab-button.active {
+    background-color: #0077aa !important;
+    color: white !important;
+  }
+  
+  .search-input {
+    flex-grow: 1;
+    min-width: 200px;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    color: #000;
+  }
+  
+  /* File table */
+  .file-table-wrapper {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  .file-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #333;
+    font-size: 0.95rem;
+  }
+  
+  .file-table th,
+  .file-table td {
+    text-align: center;
+    padding: 0.75rem;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .file-table tr:hover {
+    background-color: #fdf6ff;
+  }
+  
+  .loading-text {
+    font-style: italic;
+    color: #555;
+  }
+  
