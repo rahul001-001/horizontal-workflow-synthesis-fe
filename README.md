@@ -1,3 +1,49 @@
+Workflow Synthesis Platform
+A full-stack synthesis automation platform that enables users to create, manage, and execute workflows using custom .whl packages for computer vision or AI tasks. It integrates React for the frontend, Django for the backend, Celery with RabbitMQ for task orchestration, and PostgreSQL as the database.
+
+🚀 Features
+Workflow Management
+Create, edit, delete workflows
+
+Add, remove, and reorder workflow steps
+
+Associate wheel files, model files, and input files for each step
+
+Visualize workflows using a node-based graph interface
+
+File Management
+Upload, download, and manage input files, model files, and wheel files
+
+Folder-based storage structure inside Django's MEDIA directory
+
+Support for downloading output folders as ZIP files
+
+Task Execution
+Execute workflows asynchronously using Celery workers
+
+Queue management with RabbitMQ for reliable task scheduling
+
+Progress tracking for each workflow step
+
+Result Management
+View workflow run results
+
+Preview generated output videos
+
+Download output folders as ZIP files
+
+Dashboard Features
+Search, filter, and sort workflows by attributes such as name or creation date
+
+Pin workflows to highlight and always display them on top
+
+Role-based display for workflows (filter by creator)
+
+
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
