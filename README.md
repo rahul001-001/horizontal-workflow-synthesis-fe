@@ -31,22 +31,6 @@ A full-stack synthesis automation platform that enables users to create, manage,
 
 ---
 
-## Architecture  
-
-```plaintext
-[ React (Frontend) ]
-        |
-        v
-[ Django (REST API) ]  <---->  [ PostgreSQL Database ]
-        |
-        v
-[ Celery Workers ] <----> [ RabbitMQ (Message Broker) ]
-        |
-        v
-[ File Storage (MEDIA) ]
-
---
-
 ## General Info
 
 # Getting Started with Create React App
