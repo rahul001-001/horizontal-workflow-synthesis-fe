@@ -1,0 +1,143 @@
+.results-details-page {
+    padding: 1rem;
+    background-color: #fefefe;
+    min-height: 100vh;
+    overflow-y: auto;
+    color: #000;
+  }
+  
+  /* Section layout */
+  .results-section {
+    margin-bottom: 2rem;
+    background-color: #fefefe;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    border-left: 5px solid #0096c7;
+  }
+
+  .results-section.overview {
+    border-left-color: #8e44ad;
+  }
+  
+  .results-section.performance {
+    border-left-color: #e84393;
+  }
+  
+  .results-section.summary {
+    border-left-color: #00b894;
+  }
+  
+  .results-section.files {
+    border-left-color: #6c5ce7;
+  }
+  
+  .results-section h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    color: #333;
+  }
+  
+  /* Tables */
+  .results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    color: #222;
+  }
+  
+  .results-table th,
+  .results-table td {
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid #ccc;
+    text-align: left;
+  }
+  
+  .results-table tr:hover {
+    background-color: #f0f8ff;
+  }
+  
+  /* Badge styles */
+  .result-badge {
+    display: inline-
+  }
+
+  .results-section button {
+    background-color: #0096c7;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .results-section button:hover {
+    background-color: #0077aa;
+  }
+
+  .results-section.add-tracking {
+    background-color: #fef6fb;
+    border-left: 6px solid #e84393;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    box-shadow: 0 0 6px rgba(232, 67, 147, 0.15);
+  }
+  
+  .results-section.add-tracking h3 {
+    margin-top: 0;
+    color: #8e44ad;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .metrics-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .metrics-form input,
+  .metrics-form select {
+    flex: 1 1 200px;
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: #fff;
+    color: #000;
+  }
+  
+  .results-section.add-tracking button {
+    align-self: flex-start;
+  }
+  
+  button.primary-button {
+    background: #0096c7;
+    color: white;
+    border: none;
+    padding: 0.5rem 1.1rem;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  button.primary-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .chart-container {
+  margin-top: 2rem;
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  }
+  
+  

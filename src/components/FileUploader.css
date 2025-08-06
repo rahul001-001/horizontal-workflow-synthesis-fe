@@ -1,0 +1,74 @@
+.file-uploader {
+    background-color: #ffffff;
+    border: 2px dashed #a8dadc;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    color: #000;
+  }
+  
+  .uploader-label {
+    font-weight: bold;
+    flex: 1;
+    min-width: 120px;
+  }
+  
+  .file-uploader input[type="file"],
+  .file-uploader input[type="text"] {
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    color: #000;
+    border-radius: 6px;
+    padding: 0.5rem;
+    flex: 2;
+    min-width: 200px;
+  }
+  
+  .file-uploader input[type="file"]::file-selector-button {
+    background-color: #0096c7;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .file-uploader input[type="file"]::file-selector-button:hover {
+    background-color: #0077aa;
+  }
+  
+  .file-uploader button,
+  .file-uploader input::file-selector-button {
+    background-color: #0096c7;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background-color 0.2s ease;
+  }
+  
+  .file-uploader button:hover,
+  .file-uploader input::file-selector-button:hover {
+    background-color: #0077aa; /* slightly deeper blue on hover */
+  }
+  
+  .status {
+    min-width: 80px;
+    font-weight: 500;
+  }
+  
+  .status.uploaded {
+    color: #2d9c3f;
+  }
+  
+  .status.failed {
+    color: #b11226;
+  }
+  
