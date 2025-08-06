@@ -1,0 +1,101 @@
+.workflow-list-page {
+  padding: 1rem;
+  background-color: #fefefe;
+  min-height: 100vh;
+  color: #000;
+}
+
+.workflow-table-wrapper {
+  overflow-x: auto;
+  border-radius: 8px;
+  background-color: #fff;
+  padding: 1rem;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.workflow-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  color: #222;
+}
+
+.workflow-table th,
+.workflow-table td {
+  padding: 0.75rem;
+  text-align: center;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.workflow-table tr:hover {
+  background-color: #fdf6ff;
+}
+
+.view-link {
+  color: #0096c7;
+  text-decoration: none;
+  font-weight: 500;
+  margin-right: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.view-link:hover {
+  text-decoration: underline;
+}
+
+.workflow-controls {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  align-items: center;
+  background: linear-gradient(to right, #e6f2ff, #fce4ec);
+  padding: 0.8rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.search-input {
+  padding: 0.6rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  font-size: 0.95rem;
+  width: 200px;
+}
+
+.search-input:focus {
+  border: 1px solid #0096c7;
+  box-shadow: 0 0 4px rgba(0, 150, 199, 0.3);
+}
+
+.filter-select,
+.sort-select {
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  background: white;
+  font-size: 0.95rem;
+}
+
+.sort-toggle {
+  padding: 0.4rem 0.6rem;
+  border: none;
+  background: #0096c7;
+  color: #0096c7;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.pinned-workflow {
+  background: linear-gradient(to right, #fff3cd, #ffeeba);
+}

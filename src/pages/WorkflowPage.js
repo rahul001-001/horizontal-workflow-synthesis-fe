@@ -1,0 +1,245 @@
+// import './WorkflowPage.css';
+// import React, { useEffect, useState } from 'react';
+// import axios from '../utils/axiosInstance';
+// import { useNavigate } from 'react-router-dom';
+// import Layout from '../components/Layout';
+
+
+// const WorkflowListPage = () => {
+//   const [workflows, setWorkflows] = useState([]);
+//   const [searchTerm, setSearchTerm] = useState('');
+//   const [sortKey, setSortKey] = useState('created_at');
+//   const [sortOrder, setSortOrder] = useState('desc');
+//   const [pinnedWorkflows, setPinnedWorkflows] = useState([]);
+//   const [filterCreatedBy, setFilterCreatedBy] = useState('');
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     axios.get('/api/workflow/')
+//       .then(res => setWorkflows(res.data))
+//       .catch(err => console.error(err));
+//   }, []);
+
+//   const deleteWorkflow = (id) => {
+//     if (!window.confirm('Are you sure you want to delete this workflow?')) return;
+
+//     axios.delete(`/api/workflow/${id}/`)
+//       .then(() => setWorkflows(workflows.filter(wf => wf.id !== id)))
+//       .catch(err => console.error(err));
+//   };
+
+//   const executeWorkflow = (id) => {
+//     axios.post(`/api/workflow/execute/${id}/`)
+//       .then(() => alert(`Workflow executed!`))
+//       .catch(err => console.error(err));
+//   };
+
+//   const viewWorkflow = (id) => {
+//     navigate(`/workflows/${id}`);
+//   };
+
+//   return (
+//     <Layout>
+//     <div className="workflow-list-page">
+//       <h2>Workflows</h2>
+
+
+//       {workflows.length === 0 ? (
+//         <div className="empty-message">No workflows found.</div>
+//       ) : (
+//         <div className="workflow-table-wrapper">
+//           <table className="workflow-table">
+//             <thead>
+//               <tr>
+//                 <th>Name</th>
+//                 <th>Description</th>
+//                 <th>Input</th>
+//                 <th>Created By</th>
+//                 <th>Created At</th>
+//                 <th>Actions</th>
+//               </tr>
+//             </thead>
+//             <tbody>
+//               {workflows.map(wf => (
+//                 <tr key={wf.id}>
+//                   <td>{wf.name}</td>
+//                   <td>{wf.description}</td>
+//                   <td>{wf.input?.path || 'N/A'}</td>
+//                   <td>{wf.created_by}</td>
+//                   <td>{new Date(wf.created_at).toLocaleString()}</td>
+//                   <td>
+//                     <button className="button-view" onClick={() => viewWorkflow(wf.id)}>View</button>
+//                     <button className="button-delete" onClick={() => deleteWorkflow(wf.id)}>Delete</button>
+//                     <button className="button-execute" onClick={() => executeWorkflow(wf.id)}>Execute</button>
+//                   </td>
+//                 </tr>
+//               ))}
+//             </tbody>
+//           </table>
+//         </div>
+//       )}
+//     </div>
+//     </Layout>
+//   );
+// };
+
+// export default WorkflowListPage;
+
+import './WorkflowPage.css';
+import React, { useEffect, useState } from 'react';
+import axios from '../utils/axiosInstance';
+import { useNavigate } from 'react-router-dom';
+import Layout from '../components/Layout';
+
+const WorkflowListPage = () => {
+  const [workflows, setWorkflows] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortKey, setSortKey] = useState('created_at');
+  const [sortOrder, setSortOrder] = useState('desc');
+  const [filterCreatedBy, setFilterCreatedBy] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    axios.get('/api/workflow/')
+      .then(res => setWorkflows(res.data))
+      .catch(err => console.error(err));
+  }, []);
+
+  const deleteWorkflow = (id) => {
+    if (!window.confirm('Are you sure you want to delete this workflow?')) return;
+    axios.delete(`/api/workflow/${id}/`)
+      .then(() => setWorkflows(prev => prev.filter(wf => wf.id !== id)))
+      .catch(err => console.error(err));
+  };
+
+  const executeWorkflow = (id) => {
+    axios.post(`/api/workflow/execute/${id}/`)
+      .then(() => alert('Workflow executed!'))
+      .catch(err => console.error(err));
+  };
+
+    const pinWorkflow = (id) => {
+    axios.put(`/api/pinworkflow/${id}/`)
+      .catch(err => console.error(err));
+  };
+
+  const viewWorkflow = (id) => {
+    navigate(`/workflows/${id}`);
+  };
+
+const filteredAndSortedWorkflows = workflows
+  .filter(wf =>
+    wf.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    wf.description?.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+  .filter(wf =>
+    filterCreatedBy ? wf.created_by === filterCreatedBy : true
+  )
+  .sort((a, b) => {
+    // Pinned workflows come first
+    if (a.pinned && !b.pinned) return -1;
+    if (!a.pinned && b.pinned) return 1;
+
+    // If both are pinned or both unpinned, fall back to sort logic
+    if (sortKey === 'created_at') {
+      return sortOrder === 'asc'
+        ? new Date(a.created_at) - new Date(b.created_at)
+        : new Date(b.created_at) - new Date(a.created_at);
+    } else {
+      return sortOrder === 'asc'
+        ? (a[sortKey] || '').localeCompare(b[sortKey] || '')
+        : (b[sortKey] || '').localeCompare(a[sortKey] || '');
+    }
+  });
+
+
+  return (
+    <Layout>
+      <div className="workflow-list-page">
+        <h2>Workflows</h2>
+
+        {/* Toolbar */}
+        <div className="workflow-controls">
+          <div className="control-group">
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Search workflows..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+
+          <div className="control-group">
+            <select
+              value={filterCreatedBy}
+              onChange={(e) => setFilterCreatedBy(e.target.value)}
+              className="filter-select"
+            >
+              <option value="">Filter by creator</option>
+              {[...new Set(workflows.map(wf => wf.created_by))].map(user => (
+                <option key={user} value={user}>{user}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="control-group">
+            <select
+              value={sortKey}
+              onChange={(e) => setSortKey(e.target.value)}
+              className="sort-select"
+            >
+              <option value="created_at">Sort by Created Date</option>
+              <option value="name">Sort by Name</option>
+            </select>
+            <button
+              className="sort-toggle"
+              style={{background: "#0096c7"}}
+              onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+            >
+              {sortOrder === 'asc' ? '▲' : '▼'}
+            </button>
+          </div>
+        </div>
+
+        {filteredAndSortedWorkflows.length === 0 ? (
+          <div className="empty-message">No workflows found.</div>
+        ) : (
+          <div className="workflow-table-wrapper">
+            <table className="workflow-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th>Input</th>
+                  <th>Created By</th>
+                  <th>Created At</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredAndSortedWorkflows.map(wf => (
+                  <tr key={wf.id} className={wf.pinned ? 'pinned-workflow' : ''}>
+                    <td>{wf.name}</td>
+                    <td>{wf.description}</td>
+                    <td>{wf.input?.path || 'N/A'}</td>
+                    <td>{wf.created_by}</td>
+                    <td>{new Date(wf.created_at).toLocaleString()}</td>
+                    <td>
+                      <button className="button-view" onClick={() => viewWorkflow(wf.id)}>View</button>
+                      <button className="button-delete" onClick={() => deleteWorkflow(wf.id)}>Delete</button>
+                      <button className="button-execute" onClick={() => executeWorkflow(wf.id)}>Execute</button>
+                      <button className="button-pin" onClick={() => pinWorkflow(wf.id, !wf.pinned)}> {wf.pinned ? 'Unpin' : 'Pin'} </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </Layout>
+  );
+};
+
+export default WorkflowListPage;
