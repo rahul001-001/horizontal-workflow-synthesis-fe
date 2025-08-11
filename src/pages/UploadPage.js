@@ -30,6 +30,7 @@ function UploadPage() {
       }
     };
     fetchFiles();
+    console.log(userInfo,'pppppppp')
   }, [activeTab]);
 
   const handleDelete = async (id, input_type) => {
@@ -64,12 +65,11 @@ function UploadPage() {
   };
 
 
-  const handleDownload = async (fileId, fileName) => {
+  const handleDownload = async (relativePath, fileName) => {
     try {
       const token = localStorage.getItem('access');
-      const response = await axios.get(`/files/download/${activeTab}/${fileId}/`, {
-        headers: { Authorization: `Bearer ${token}` },
-        responseType: 'blob',
+      const response = await axios.post(`/files/downloadfile/`, { relative_path: relativePath }, {
+        responseType: 'blob'
       });
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -183,14 +183,12 @@ const filteredFiles = files.filter(file => {
                       <td>
                         {['admin', 'scientist', 'engineer'].includes(userInfo?.role) && (
                           <>
-                            {file.file && (
                               <button
                                 className="action-button"
-                                onClick={() => handleDownload(file.id, file.file_name)}
+                                onClick={() => handleDownload(file.path, file.name)}
                               >
                                 Download
                               </button>
-                            )}
                             <button
                               className="action-button"
                               onClick={() => handleDelete(file.id, file.input_type || null)}
