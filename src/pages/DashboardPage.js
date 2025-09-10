@@ -43,7 +43,7 @@ function DashboardPage() {
         const groundTruthRes = await axios.get('/files/list/groundtruth/');
         const inputTypes = [
           { id: 'video', name: 'Video' },
-          { id: 'images', name: 'Images' }
+          { id: 'image', name: 'Image' }
         ];
         setInputFiles(inputRes.data);
         setModelFiles(modelRes.data);
@@ -77,7 +77,7 @@ function DashboardPage() {
       const prevId = idx === 0 ? 'input' : `step-${idx}`;
       newNodes.push({
         id: stepId,
-        position: { x: 200 + idx * 200, y: 150 },
+        position: { x: 250 + idx * 200, y: 150 },
         data: {
           label: `Step ${idx + 1}: ${step.script?.name || 'N/A'}\nModel: ${step.model?.name || 'None'}`
         },

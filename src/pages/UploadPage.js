@@ -1,11 +1,12 @@
 
 // UploadPage.js
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useMemo } from 'react';
 import Layout from '../components/Layout';
 import FileUploader from '../components/FileUploader';
 import axios from '../utils/axiosInstance';
 import { UserContext } from '../context/userContext';
 import './UploadPage.css';
+import Pagination from '../components/Pagination';
 
 const TABS = ['wheel', 'input', 'model', 'class', 'groundtruth'];
 
@@ -16,6 +17,9 @@ function UploadPage() {
   const [loading, setLoading] = useState(false)
   const [uploadMode, setUploadMode] = useState('file');
   const userInfo = useContext(UserContext);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
 
   useEffect(() => {
     const fetchFiles = async () => {
@@ -23,6 +27,19 @@ function UploadPage() {
       try {
         const response = await axios.get(`/files/list/${activeTab}`);
         setFiles(response.data);
+        const res = await axios.get(`/files/list/${activeTab}`, { params: { page, page_size: pageSize } });
+        if (res?.data && typeof res.data === 'object' && 'results' in res.data && 'count' in res.data) {
+          setFiles(res.data.results);
+          setTotalCount(res.data.count);
+        } else if (Array.isArray(res.data)) {
+          const all = res.data;
+          setTotalCount(all.length);
+          const start = (page - 1) * pageSize;
+          setFiles(all.slice(start, start + pageSize));
+        } else {
+          setFiles([]);
+          setTotalCount(0);
+        }
       } catch (error) {
         console.error('Failed to fetch files:', error);
       } finally {
@@ -30,8 +47,10 @@ function UploadPage() {
       }
     };
     fetchFiles();
-    console.log(userInfo,'pppppppp')
-  }, [activeTab]);
+  }, [activeTab, page, pageSize]);
+
+  // reset to first page when switching tabs
+  useEffect(() => { setPage(1); }, [activeTab]);
 
   const handleDelete = async (id, input_type) => {
     if (activeTab === 'input') {
@@ -84,10 +103,18 @@ function UploadPage() {
     }
   };
 
-const filteredFiles = files.filter(file => {
-  const target = file.file || file.folder_path || '';
-  return target.toLowerCase().includes(searchTerm.toLowerCase());
-});
+// const filteredFiles = files.filter(file => {
+//   const target = file.file || file.folder_path || '';
+//   return target.toLowerCase().includes(searchTerm.toLowerCase());
+// });
+
+ const filteredFiles = useMemo(() => {
+    const lower = searchTerm.toLowerCase();
+    return files.filter(file => {
+      const target = (file.file || file.folder_path || file.path || '').toLowerCase();
+      return target.includes(lower);
+    });
+  }, [files, searchTerm]);
 
   return (
     <Layout>
@@ -206,7 +233,19 @@ const filteredFiles = files.filter(file => {
               </tbody>
             </table>
           </div>
+          
         )}
+
+    <div style={{ marginTop: '1rem' }}>
+    <Pagination
+      totalItems={totalCount}
+      pageSize={pageSize}
+      currentPage={page}
+      onPageChange={(p) => { setPage(p); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+      showPageSizeSelect
+      onPageSizeChange={(s) => { setPageSize(s); setPage(1); }}
+    />
+    </div>
       </div>
     </Layout>
   );

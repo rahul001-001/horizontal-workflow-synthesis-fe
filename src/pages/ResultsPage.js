@@ -4,7 +4,9 @@ import Layout from '../components/Layout';
 import axios from '../utils/axiosInstance';
 import moment from 'moment';
 import { UserContext } from '../context/userContext';
-import './ResultsPage.css'; // 👈 Add this line
+import './ResultsPage.css';
+
+import Pagination from '../components/Pagination';
 
 export const TimeDiff = ({ from, to, fallback = 'N/A' }) => {
   if (!from || !to) {
@@ -21,25 +23,57 @@ export const TimeDiff = ({ from, to, fallback = 'N/A' }) => {
 
 function ResultsPage() {
   const [results, setResults] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(1);          // 1-based
+  const [pageSize, setPageSize] = useState(10);
+  const [loading, setLoading] = useState(false);
   const userInfo = useContext(UserContext);
 
+  // Fetch results with server-side pagination if supported; else slice client-side.
   useEffect(() => {
     const fetchResults = async () => {
+      setLoading(true);
       try {
-        const response = await axios.get('/api/workflow/run');
-        setResults(response.data);
+        const res = await axios.get('/api/workflow/run', {
+          params: { page, page_size: pageSize },
+        });
+
+        if (res?.data && typeof res.data === 'object' && 'results' in res.data && 'count' in res.data) {
+          // Server-side pagination mode
+          setResults(res.data.results);
+          setTotalCount(res.data.count);
+        } else if (Array.isArray(res.data)) {
+          // Client-side pagination fallback
+          const all = res.data;
+          setTotalCount(all.length);
+          const start = (page - 1) * pageSize;
+          setResults(all.slice(start, start + pageSize));
+        } else {
+          setResults([]);
+          setTotalCount(0);
+        }
       } catch (error) {
         console.error('Failed to load results:', error);
+        setResults([]);
+        setTotalCount(0);
+      } finally {
+        setLoading(false);
       }
     };
     fetchResults();
-  }, []);
+  }, [page, pageSize]);
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this result?')) return;
     try {
       await axios.delete(`/api/workflow/run/${id}/`);
       setResults((prev) => prev.filter(r => r.id !== id));
+      setTotalCount((c) => Math.max(0, c - 1));
+      // if we removed the last item on the page, go back a page (client-friendly)
+      setResults((prev) => {
+        if (prev.length === 0 && page > 1) setPage(page - 1);
+        return prev;
+      });
     } catch (error) {
       console.error('Failed to delete run:', error);
     }
@@ -49,7 +83,24 @@ function ResultsPage() {
     <Layout>
       <div className="results-page">
         <h1>Results</h1>
-        {results.length === 0 ? (
+
+        {/* Page size control */}
+        <div style={{ margin: '0 0 0.75rem 0' }}>
+          <label className="text-sm" style={{ color: '#374151' }}>
+            Items per page:&nbsp;
+            <select
+              value={pageSize}
+              onChange={(e) => { setPageSize(parseInt(e.target.value, 10)); setPage(1); }}
+              className="border rounded-md px-2 py-1"
+            >
+              {[10, 20, 50, 100].map((n) => <option key={n} value={n}>{n}</option>)}
+            </select>
+          </label>
+        </div>
+
+        {loading ? (
+          <p className="empty-message">Loading…</p>
+        ) : totalCount === 0 ? (
           <p className="empty-message">No results found.</p>
         ) : (
           <div className="results-table-wrapper">
@@ -69,32 +120,28 @@ function ResultsPage() {
               <tbody>
                 {results.map(result => (
                   <tr key={result.id}>
-                    <td>{result.workflow.name}</td>
-                    <td>{result.workflow.description}</td>
-                    <td>{result.workflow.input?.name || 'N/A'}</td>
+                    <td>{result.workflow?.name}</td>
+                    <td>{result.workflow?.description}</td>
+                    <td>{result.workflow?.input?.name || 'N/A'}</td>
                     <td>
-                      <span className={`status
-                          ${result.error
-                            ? 'error'
-                            : result.end_time
-                              ? 'success'
-                              : 'in-progress'
-                          }`}
+                      <span
+                        className={`status ${
+                          result.error ? 'error' : result.end_time ? 'success' : 'in-progress'
+                        }`}
                       >
-                        {result.error
-                          ? 'Error'
-                          : result.end_time
-                            ? 'Success'
-                            : 'In Progress'}
+                        {result.error ? 'Error' : result.end_time ? 'Success' : 'In Progress'}
                       </span>
                     </td>
-                    <td>{result.workflow.created_at}</td>
-                    <td>{result.workflow.created_by}</td>
-                    <td><TimeDiff from={result.start_time} to={result.end_time} fallback="In progress"/></td>
+                    <td>{result.workflow?.created_at}</td>
+                    <td>{result.workflow?.created_by}</td>
+                    <td>
+                      <TimeDiff from={result.start_time} to={result.end_time} fallback="In progress" />
+                    </td>
                     <td>
                       <Link to={`/results/${result.id}`} className="view-link">View</Link>
                       {['admin', 'scientist', 'engineer'].includes(userInfo?.role) && (
-                        <button style={{
+                        <button
+                          style={{
                             backgroundColor: '#b11226',
                             color: 'white',
                             padding: '0.5rem 1rem',
@@ -103,7 +150,10 @@ function ResultsPage() {
                             fontWeight: 'bold',
                             marginLeft: '0.5rem',
                             cursor: 'pointer'
-                          }} onClick={() => handleDelete(result.id)} className="delete-button">
+                          }}
+                          onClick={() => handleDelete(result.id)}
+                          className="delete-button"
+                        >
                           Delete
                         </button>
                       )}
@@ -112,6 +162,18 @@ function ResultsPage() {
                 ))}
               </tbody>
             </table>
+
+            {/* Pagination bar */}
+            <div style={{ marginTop: '1rem' }}>
+              <Pagination
+                totalItems={totalCount}
+                pageSize={pageSize}
+                currentPage={page}
+                onPageChange={(p) => { setPage(p); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                showPageSizeSelect
+                onPageSizeChange={(s) => { setPageSize(s); setPage(1); }}
+              />
+            </div>
           </div>
         )}
       </div>

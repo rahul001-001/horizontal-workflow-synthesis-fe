@@ -13,7 +13,6 @@ import LeaderboardPage from './pages/LeaderboardPage';
 
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import darkTheme from './theme'; // adjust path if needed
 import WorkflowListPage from './pages/WorkflowPage';
 import WorkflowDetailsPage from './pages/WorkflowDetailsPage';
 
@@ -40,7 +39,6 @@ function App() {
 
   return (
     <UserContext.Provider value={userInfo}>
-      <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <Router>
         <Routes>
@@ -55,7 +53,6 @@ function App() {
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       </Router>
-      </ThemeProvider>
     </UserContext.Provider>
   );
 }

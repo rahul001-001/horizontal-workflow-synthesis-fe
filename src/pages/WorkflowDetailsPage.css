@@ -22,13 +22,38 @@
 }
 
 .workflow-step {
-  display: flex;
+  display: grid;
+  flex-wrap: wrap;
+  flex-direction: column;
   gap: 0.5rem;
   align-items: center;
   margin-bottom: 0.5rem;
+  border: 0.5px solid #ccc;
+  padding: 5px;
 }
 
 .step-input {
+  flex: 1;
+  padding: 0.4rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.step-model {
+  flex: 1;
+  padding: 0.4rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.step-class {
+  flex: 1;
+  padding: 0.4rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.step-groundtruth {
   flex: 1;
   padding: 0.4rem;
   border: 1px solid #ccc;

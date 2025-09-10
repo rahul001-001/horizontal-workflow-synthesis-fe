@@ -54,7 +54,6 @@ function ResultsPageDetails() {
     const NODE_WIDTH = 200;
     const Y = 150;
 
-    // Input Node
     nodes.push({
       id: 'input',
       type: 'input',
@@ -105,19 +104,16 @@ function ResultsPageDetails() {
       responseType: 'blob'
     });
 
-    // Create a blob URL
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');
     link.href = url;
 
-    // Extract filename from relativePath
     const fileName = relativePath.split('/').pop() || 'output.zip';
     link.setAttribute('download', fileName);
 
     document.body.appendChild(link);
     link.click();
 
-    // Cleanup
     link.remove();
     window.URL.revokeObjectURL(url);
   } catch (error) {
@@ -191,7 +187,7 @@ function ResultsPageDetails() {
           <p><strong>Output:</strong> {result.output || 'None'} {result.output && <button onClick={() => handleDownload(result.output)}> Download </button>}</p>
         </section>
 
-        {Array.isArray(result.video_paths) && result.video_paths.length > 0 && (
+        {/* {Array.isArray(result.video_paths) && result.video_paths.length > 0 && (
           <section className="results-section video-preview">
             <h3>Inference Videos</h3>
             {result.video_paths.map((videoPath, index) => {
@@ -209,6 +205,34 @@ function ResultsPageDetails() {
                   style={{ borderRadius: '8px', marginTop: '1rem' }}
                 >
                   <source src={`/media/${relativePath}`} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              );
+            })}
+          </section>
+        )} */}
+
+        {Array.isArray(result.video_paths) && result.video_paths.length > 0 && (
+          <section className="results-section video-preview">
+            <h3>Inference Videos</h3>
+            {result.video_paths.map((videoPath, index) => {
+              // Extract relative path for display + API fallback
+              const relativePath = videoPath.includes('/media/')
+                ? videoPath.split('/media/')[1]
+                : videoPath;
+
+              const fallbackApiUrl = `/files/download/serve-video/?path=${encodeURIComponent(relativePath)}`;
+
+              return (
+                <video
+                  key={index}
+                  width="100%"
+                  height="auto"
+                  controls
+                  style={{ borderRadius: '8px', marginTop: '1rem' }}
+                >
+                  {/* <source src={`/media/${relativePath}`} type="video/mp4" /> */}
+                  <source src={fallbackApiUrl} type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
               );

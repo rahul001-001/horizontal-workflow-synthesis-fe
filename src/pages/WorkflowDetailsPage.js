@@ -18,6 +18,8 @@ const WorkflowDetailPage = () => {
   const [wheelFiles, setWheelFiles] = useState([]);
   const [modelFiles, setModelFiles] = useState([]);
   const [inputFiles, setInputFiles] = useState([]);
+  const [classFiles, setclassFiles] = useState([]);
+  const [groundTruthFiles, setgroundTruthFiles] = useState([]);
 
   useEffect(() => {
     axios.get(`/api/workflow/${id}/`)
@@ -40,6 +42,14 @@ const WorkflowDetailPage = () => {
     axios.get('/files/list/input/')
       .then(res => setInputFiles(res.data))
       .catch(err => console.error(err));
+
+    axios.get('/files/list/class/')
+      .then(res => setclassFiles(res.data))
+      .catch(err => console.error(err));
+
+    axios.get('/files/list/groundtruth/')
+      .then(res => setgroundTruthFiles(res.data))
+      .catch(err => console.error(err));
   }, [id]);
 
 const buildGraphElements = (data) => {
@@ -48,7 +58,7 @@ const buildGraphElements = (data) => {
   const nodes = [];
   const edges = [];
 
-  const NODE_WIDTH = 200; // adjust spacing here
+  const NODE_WIDTH = 200;
   const START_X = 50;
   const Y = 100;
 
@@ -66,7 +76,6 @@ const buildGraphElements = (data) => {
 
   data.steps.forEach((step, i) => {
     const nodeId = `step-${i + 1}`;
-    // const nodeId = `step-${step.step_number}`;
     const wheel = step.wheel_file?.name || step.wheel_file?.description || step.wheel_file?.id || 'N/A';
     const model = step.model_file
       ? (step.model_file.name || step.model_file.description || step.model_file.id)
@@ -119,7 +128,7 @@ const buildGraphElements = (data) => {
 
   const addStep = () => {
     const nextStepNumber = workflow.steps.length + 1;
-    const newStep = { step_number: nextStepNumber, wheel_file: '', model_file: '' };
+    const newStep = { step_number: nextStepNumber, wheel_file: '', model_file: '' , class_file:'', ground_truth_file:''};
     setWorkflow(prev => ({
       ...prev,
       steps: [...prev.steps, newStep]
@@ -200,8 +209,9 @@ const buildGraphElements = (data) => {
           <strong>Steps:</strong>
           {workflow.steps.map((step, index) => (
             <div className="workflow-step" key={index}>
-              <span>Step {step.step_number}</span>
+              <h1>Step {step.step_number}</h1>
 
+              <label for="step-input">Wheel file</label>
               <select
                 className="step-input"
                 value={step.wheel_file?.id || ''}
@@ -218,8 +228,9 @@ const buildGraphElements = (data) => {
                 ))}
               </select>
 
+              <label for="step-model">Model file</label>
               <select
-                className="step-input"
+                className="step-model"
                 value={step.model_file?.id || ''}
                 onChange={(e) =>
                   updateStep(index, 'model_file',
@@ -228,6 +239,40 @@ const buildGraphElements = (data) => {
               >
                 <option value="">-- Select Model File --</option>
                 {modelFiles.map(file => (
+                  <option key={file.id} value={file.id}>
+                    {file.file_name || file.description}
+                  </option>
+                ))}
+              </select>
+
+              <label for="step-class">Class file</label>
+              <select
+                className="step-class"
+                value={step.class_file?.id || ''}
+                onChange={(e) =>
+                  updateStep(index, 'class_file',
+                    classFiles.find(f => f.id === parseInt(e.target.value)))
+                }
+              >
+                <option value="">-- Select Class File --</option>
+                {classFiles.map(file => (
+                  <option key={file.id} value={file.id}>
+                    {file.file_name || file.description}
+                  </option>
+                ))}
+              </select>
+
+              <label for="step-groundtruth">Ground Truth file</label>
+              <select
+                className="step-groundtruth"
+                value={step.ground_truth_file?.id || ''}
+                onChange={(e) =>
+                  updateStep(index, 'ground_truth_file',
+                    groundTruthFiles.find(f => f.id === parseInt(e.target.value)))
+                }
+              >
+                <option value="">-- Select Ground Truth File --</option>
+                {groundTruthFiles.map(file => (
                   <option key={file.id} value={file.id}>
                     {file.file_name || file.description}
                   </option>
