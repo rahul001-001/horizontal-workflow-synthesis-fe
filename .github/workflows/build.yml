@@ -27,7 +27,7 @@ jobs:
         context: .
         push: true
         tags: |
-          yourusername/frontend-repo:latest
-          yourusername/frontend-repo:${{ github.sha }}
+          rahul001935/workflow-synthesizer:frontend-latest
+          rahul001935/workflow-synthesizer:${{ github.sha }}
         build-args: |
           CI=false
