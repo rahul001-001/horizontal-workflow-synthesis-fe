@@ -1,68 +1,76 @@
-
-// UploadPage.js
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useMemo } from 'react';
 import Layout from '../components/Layout';
 import FileUploader from '../components/FileUploader';
 import axios from '../utils/axiosInstance';
 import { UserContext } from '../context/userContext';
 import './UploadPage.css';
+import Pagination from '../components/Pagination';
 
 const TABS = ['wheel', 'input', 'model', 'class', 'groundtruth'];
 
 function UploadPage() {
   const [activeTab, setActiveTab] = useState('wheel');
   const [files, setFiles] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+
   const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [uploadMode, setUploadMode] = useState('file');
   const userInfo = useContext(UserContext);
+
+  // pagination
+  const [page, setPage] = useState(1);      // 1-based
+  const [pageSize, setPageSize] = useState(10);
 
   useEffect(() => {
     const fetchFiles = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`/files/list/${activeTab}`);
-        setFiles(response.data);
+        const res = await axios.get(`/files/list/${activeTab}`, {
+          params: { page, page_size: pageSize }
+        });
+
+        if (res?.data && typeof res.data === 'object' && 'results' in res.data && 'count' in res.data) {
+          // server-side pagination
+          setFiles(res.data.results);
+          setTotalCount(res.data.count);
+        } else if (Array.isArray(res.data)) {
+          // client-side pagination
+          const all = res.data;
+          setTotalCount(all.length);
+          const start = (page - 1) * pageSize;
+          setFiles(all.slice(start, start + pageSize));
+        } else {
+          setFiles([]);
+          setTotalCount(0);
+        }
       } catch (error) {
         console.error('Failed to fetch files:', error);
+        setFiles([]);
+        setTotalCount(0);
       } finally {
         setLoading(false);
       }
     };
     fetchFiles();
-  }, [activeTab]);
+  }, [activeTab, page, pageSize]);
+
+  // reset page when tab changes
+  useEffect(() => { setPage(1); }, [activeTab]);
 
   const handleDelete = async (id, input_type) => {
-    if (activeTab === 'input') {
-      if (input_type === 'folder'){
-        try {
+    try {
+      if (activeTab === 'input' && input_type === 'folder') {
         await axios.delete(`/files/delete/folder/${id}/`);
-        setFiles(prev => prev.filter(file => file.id !== id));
-      } catch (error) {
-        console.error('Failed to delete folder:', error);
-      }
-      }
-      else {
-        try {
+      } else {
         await axios.delete(`/files/delete/file/${id}/${activeTab}`);
-        setFiles(prev => prev.filter(file => file.id !== id));
-        } catch (error) {
-        console.error('Failed to delete folder:', error);
-        }
       }
+      setFiles(prev => prev.filter(f => f.id !== id));
+      setTotalCount(c => Math.max(0, c - 1));
+    } catch (error) {
+      console.error('Failed to delete:', error);
     }
-    else{
-      try {
-        await axios.delete(`/files/delete/file/${id}/${activeTab}`);
-        setFiles(prev => prev.filter(file => file.id !== id));
-      } catch (error) {
-        console.error('Failed to delete file:', error);
-      }
-    }
-
-
   };
-
 
   const handleDownload = async (fileId, fileName) => {
     try {
@@ -79,15 +87,19 @@ function UploadPage() {
       document.body.appendChild(link);
       link.click();
       link.remove();
+      URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Download failed:', error);
     }
   };
 
-const filteredFiles = files.filter(file => {
-  const target = file.file || file.folder_path || '';
-  return target.toLowerCase().includes(searchTerm.toLowerCase());
-});
+  const filteredFiles = useMemo(() => {
+    const lower = searchTerm.toLowerCase();
+    return files.filter(file => {
+      const target = (file.file || file.folder_path || file.path || '').toLowerCase();
+      return target.includes(lower);
+    });
+  }, [files, searchTerm]);
 
   return (
     <Layout>
@@ -116,41 +128,49 @@ const filteredFiles = files.filter(file => {
           />
         </div>
 
-      {activeTab === 'input' && (
-        <div className="upload-mode-toggle" style={{ marginBottom: '1rem' }}>
-          <label>
-            <input
-              type="radio"
-              name="uploadMode"
-              value="file"
-              checked={uploadMode === 'file'}
-              onChange={(e) => setUploadMode(e.target.value)}
-            />
-            File
-          </label>
-
-          <label style={{ marginLeft: '1rem' }}>
-            <input
-              type="radio"
-              name="uploadMode"
-              value="folder"
-              checked={uploadMode === 'folder'}
-              onChange={(e) => setUploadMode(e.target.value)}
-            />
-            Folder
-          </label>
-        </div>
-      )}
+        {activeTab === 'input' && (
+          <div className="upload-mode-toggle" style={{ marginBottom: '1rem' }}>
+            <label>
+              <input
+                type="radio"
+                name="uploadMode"
+                value="file"
+                checked={uploadMode === 'file'}
+                onChange={(e) => setUploadMode(e.target.value)}
+              />
+              File
+            </label>
+            <label style={{ marginLeft: '1rem' }}>
+              <input
+                type="radio"
+                name="uploadMode"
+                value="folder"
+                checked={uploadMode === 'folder'}
+                onChange={(e) => setUploadMode(e.target.value)}
+              />
+              Folder
+            </label>
+          </div>
+        )}
 
         <FileUploader
           type={activeTab}
           mode={activeTab === 'input' ? uploadMode : 'file'}
           onUploadSuccess={() =>
-            axios.get(`/files/list/${activeTab}/`).then(res => setFiles(res.data))
+            axios.get(`/files/list/${activeTab}`, { params: { page, page_size: pageSize } })
+              .then(res => {
+                if (res?.data && 'results' in res.data && 'count' in res.data) {
+                  setFiles(res.data.results);
+                  setTotalCount(res.data.count);
+                } else if (Array.isArray(res.data)) {
+                  setTotalCount(res.data.length);
+                  const start = (page - 1) * pageSize;
+                  setFiles(res.data.slice(start, start + pageSize));
+                }
+              })
           }
         />
 
-        {/* File Table */}
         {loading ? (
           <p className="loading-text">Loading files...</p>
         ) : (
@@ -169,16 +189,9 @@ const filteredFiles = files.filter(file => {
                 {filteredFiles.length > 0 ? (
                   filteredFiles.map(file => (
                     <tr key={file.id}>
-                      <td>
-                        {file.file || file.path || <em>—</em>}
-                      </td>
+                      <td>{file.file || file.path || <em>—</em>}</td>
                       <td>{file.description}</td>
-                      <td>
-                        {file.size
-                          ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
-                          : <em>—</em>
-                        }
-                      </td>
+                      <td>{file.size ? `${(file.size / (1024 * 1024)).toFixed(2)} MB` : <em>—</em>}</td>
                       <td>{new Date(file.uploaded_at).toLocaleString()}</td>
                       <td>
                         {['admin', 'scientist', 'engineer'].includes(userInfo?.role) && (
@@ -207,6 +220,18 @@ const filteredFiles = files.filter(file => {
                 )}
               </tbody>
             </table>
+
+            {/* Pagination */}
+            <div style={{ marginTop: '1rem' }}>
+              <Pagination
+                totalItems={totalCount}
+                pageSize={pageSize}
+                currentPage={page}
+                onPageChange={(p) => { setPage(p); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                showPageSizeSelect
+                onPageSizeChange={(s) => { setPageSize(s); setPage(1); }}
+              />
+            </div>
           </div>
         )}
       </div>

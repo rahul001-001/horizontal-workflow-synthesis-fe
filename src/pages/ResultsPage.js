@@ -84,20 +84,6 @@ function ResultsPage() {
       <div className="results-page">
         <h1>Results</h1>
 
-        {/* Page size control */}
-        <div style={{ margin: '0 0 0.75rem 0' }}>
-          <label className="text-sm" style={{ color: '#374151' }}>
-            Items per page:&nbsp;
-            <select
-              value={pageSize}
-              onChange={(e) => { setPageSize(parseInt(e.target.value, 10)); setPage(1); }}
-              className="border rounded-md px-2 py-1"
-            >
-              {[10, 20, 50, 100].map((n) => <option key={n} value={n}>{n}</option>)}
-            </select>
-          </label>
-        </div>
-
         {loading ? (
           <p className="empty-message">Loading…</p>
         ) : totalCount === 0 ? (
